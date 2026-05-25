@@ -1,0 +1,10 @@
+name = "robertmaefs-api"
+main = "lambda/worker.js"
+compatibility_date = "2026-05-24"
+
+routes = [
+  { pattern = "api.robertmaefs.com/contact", zone_id = "eb306047b3a54b47aab50d222add9b60" }
+]
+
+[env.production]
+vars = { API_URL = "https://1g5x3kc611.execute-api.us-east-1.amazonaws.com/contact" }

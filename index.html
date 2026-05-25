@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robert Maefs Consulting</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">RMC</div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <h1>Robert Maefs Consulting</h1>
+        <p class="tagline">Technical strategy, software architecture, and advisory services.</p>
+        <a href="#contact" class="btn">Get in touch</a>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="section">
+      <div class="container">
+        <h2>About</h2>
+        <p>Independent consulting focused on solving complex engineering problems. From system architecture and cloud infrastructure to product strategy and technical due diligence — I help teams build better software.</p>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="section alt">
+      <div class="container">
+        <h2>Services</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Software Development</h3>
+            <p>Full-stack development, API design, and system architecture. Python, TypeScript, Go, and modern frameworks.</p>
+          </div>
+          <div class="card">
+            <h3>Cloud & Infrastructure</h3>
+            <p>AWS architecture, infrastructure-as-code, CI/CD pipelines, and cloud migration strategy.</p>
+          </div>
+          <div class="card">
+            <h3>Technical Advisory</h3>
+            <p>Code reviews, technology evaluations, architecture assessments, and engineering team guidance.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section">
+      <div class="container">
+        <h2>Contact</h2>
+        <form id="contact-form">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="btn">Send message</button>
+          <p class="form-status" id="form-status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Robert Maefs Consulting. All rights reserved.</p>
+      <p><a href="https://app.robertmaefs.com/privacy.html">Privacy Policy</a> | <a href="https://app.robertmaefs.com/eula.html">Terms</a></p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('contact-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const status = document.getElementById('form-status');
+      status.textContent = 'Sending...';
+      status.className = 'form-status';
+
+      try {
+        const resp = await fetch('https://1g5x3kc611.execute-api.us-east-1.amazonaws.com/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value
+          })
+        });
+        if (resp.ok) {
+          status.textContent = 'Thanks! Your message has been sent.';
+          status.className = 'form-status success';
+          this.reset();
+        } else {
+          const err = await resp.text();
+          throw new Error(err);
+        }
+      } catch (err) {
+        status.textContent = 'Something went wrong. Please email directly: hello@robertmaefs.com';
+        status.className = 'form-status error';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Contact form API for robertmaefs.com — API Gateway + Lambda + SES
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: robertmaefs.com
+  ToEmail:
+    Type: String
+    Default: hello@robertmaefs.com
+  FromEmail:
+    Type: String
+    Default: noreply@robertmaefs.com
+
+Resources:
+  # ── Lambda ────────────────────────────────────────────────────
+  ContactFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: robertmaefs-contact
+      Runtime: python3.12
+      Handler: contact_handler.lambda_handler
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 10
+      Environment:
+        Variables:
+          TO_EMAIL: !Ref ToEmail
+          FROM_EMAIL: !Ref FromEmail
+          SES_REGION: !Ref AWS::Region
+      Code:
+        ZipFile: |
+          import json, os, boto3
+          from email.mime.text import MIMEText
+          ses = boto3.client('ses', region_name=os.environ['SES_REGION'])
+          def lambda_handler(event, context):
+            if event.get('requestContext',{}).get('http',{}).get('method') == 'OPTIONS':
+              return cors(200, {'ok':True})
+            try:
+              body = json.loads(event.get('body','{}'))
+            except:
+              return cors(400, {'error':'Invalid JSON'})
+            name = body.get('name','').strip()
+            email = body.get('email','').strip()
+            msg = body.get('message','').strip()
+            if not name or not email or not msg:
+              return cors(400, {'error':'All fields required'})
+            try:
+              m = MIMEText(f'Name: {name}\nEmail: {email}\n\n{msg}'.strip())
+              m['Subject'] = f'Contact: {name}'
+              m['From'] = os.environ['FROM_EMAIL']
+              m['To'] = os.environ['TO_EMAIL']
+              ses.send_raw_email(Source=os.environ['FROM_EMAIL'],Destinations=[os.environ['TO_EMAIL']],RawMessage={'Data':m.as_string()})
+              return cors(200, {'ok':True})
+            except Exception as e:
+              print(e)
+              return cors(500, {'error':'Send failed'})
+          def cors(s,d):
+            return {'statusCode':s,'headers':{'Content-Type':'application/json','Access-Control-Allow-Origin':'https://robertmaefs.com','Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type'},'body':json.dumps(d)}
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaSES
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ses:SendRawEmail
+                  - ses:SendEmail
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: '*'
+
+  # ── API Gateway (HTTP API) ────────────────────────────────────
+  ContactApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: robertmaefs-contact
+      ProtocolType: HTTP
+      CorsConfiguration:
+        AllowOrigins:
+          - https://robertmaefs.com
+          - https://www.robertmaefs.com
+        AllowMethods:
+          - POST
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+
+  ContactIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref ContactApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt ContactFunction.Arn
+      PayloadFormatVersion: '2.0'
+
+  ContactRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ContactApi
+      RouteKey: POST /contact
+      Target: !Sub integrations/${ContactIntegration}
+
+  ContactDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - ContactRoute
+    Properties:
+      ApiId: !Ref ContactApi
+
+  ContactStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: $default
+      ApiId: !Ref ContactApi
+      DeploymentId: !Ref ContactDeployment
+      AutoDeploy: true
+
+  # ── Lambda permission ─────────────────────────────────────────
+  LambdaApiPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ContactFunction
+      Principal: apigateway.amazonaws.com
+
+Outputs:
+  ApiUrl:
+    Description: Contact form API endpoint
+    Value: !Sub https://${ContactApi}.execute-api.${AWS::Region}.amazonaws.com/contact
