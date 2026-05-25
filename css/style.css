@@ -247,19 +247,37 @@ footer a {
 footer a:hover { color: #ccc; }
 
 /* ── Hidden resume section (black-on-black, zero height) ── */
-.resume-hidden {
-  position: absolute;
-  left: -9999px;
-  top: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  color: #0a0a0f;
-  background: #0a0a0f;
-  opacity: 0;
-  z-index: -1;
+.resume-ascii {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100vh;
+  z-index: 0;
   pointer-events: none;
   user-select: none;
+  overflow: hidden;
+
+  font-family: 'SF Mono', 'SFMono-Regular', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  font-size: 8px;
+  line-height: 1.08;
+  letter-spacing: 0;
+  white-space: pre;
+  word-break: keep-all;
+  overflow-wrap: normal;
+
+  color: rgba(232, 232, 245, 0.05);
+
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 60%, transparent 100%);
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.resume-ascii::-webkit-scrollbar { display: none; }
+
+@media (max-width: 768px) {
+  .resume-ascii { display: none; }
 }
 
 /* ── Responsive ──────────────────────────────────────────────── */
