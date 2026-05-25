@@ -36,7 +36,7 @@ body {
   overflow: hidden;
 
   font-family: 'SF Mono', 'SFMono-Regular', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
-  font-size: 7px;
+  font-size: 10px;
   line-height: 1.08;
   letter-spacing: 0;
   white-space: pre;
@@ -44,7 +44,7 @@ body {
   overflow-wrap: normal;
   tab-size: 1;
 
-  color: rgba(232, 232, 245, 0.07);
+  color: rgba(232, 232, 245, 0.4);
 
   mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,1) 70%, transparent 100%), linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 100%);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,1) 70%, transparent 100%), linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 100%);
@@ -58,11 +58,11 @@ body {
 .ascii-bg::-webkit-scrollbar { display: none; }
 
 @media (min-width: 1200px) {
-  .ascii-bg { font-size: 8px; }
+  .ascii-bg { font-size: 11px; }
 }
 
 @media (max-width: 768px) {
-  .ascii-bg { font-size: 4px; }
+  .ascii-bg { font-size: 6px; }
 }
 
 /* ── Header / Nav ────────────────────────────────────────────── */
