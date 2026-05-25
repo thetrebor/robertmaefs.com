@@ -113,7 +113,11 @@ nav {
   padding: 80px 24px;
 }
 
-.hero-content { max-width: 640px; }
+.hero-content {
+  max-width: 740px;
+  background-color: rgba(5, 5, 5, 0.8);
+  padding: 3em;
+}
 
 .hero h1 {
   font-size: 3.2rem;
@@ -173,6 +177,9 @@ nav {
 .contact-section form {
   max-width: 480px;
   margin: 0 auto;
+  background-color: rgba(5, 5, 5, 0.8);
+  padding: 2.5em 3em;
+  border-radius: 6px;
 }
 
 .form-group { margin-bottom: 20px; }
@@ -249,8 +256,8 @@ footer a:hover { color: #ccc; }
 /* ── Hidden resume section (black-on-black, zero height) ── */
 .resume-ascii {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 1.5em;
+  left: 3em;
   width: 50%;
   height: 100vh;
   z-index: 0;
@@ -259,8 +266,8 @@ footer a:hover { color: #ccc; }
   overflow: hidden;
 
   font-family: 'SF Mono', 'SFMono-Regular', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
-  font-size: 8px;
-  line-height: 1.08;
+  font-size: 10px;
+  line-height: 2.08;
   letter-spacing: 0;
   white-space: pre;
   word-break: keep-all;
