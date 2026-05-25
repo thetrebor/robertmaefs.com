@@ -26,10 +26,9 @@ body {
 .ascii-bg {
   position: fixed;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 1400px;
+  right: 0;
+  width: auto;
+  max-width: none;
   height: 100vh;
   z-index: 0;
   pointer-events: none;
@@ -45,10 +44,12 @@ body {
   overflow-wrap: normal;
   tab-size: 1;
 
-  color: rgba(232, 232, 245, 0.045);
+  color: rgba(232, 232, 245, 0.07);
 
-  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 65%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 65%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,1) 70%, transparent 100%), linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,1) 70%, transparent 100%), linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 100%);
+  -webkit-mask-composite: source-over;
+  mask-composite: add;
 
   /* Hide scrollbar */
   scrollbar-width: none;
